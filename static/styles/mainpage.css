@@ -1,3 +1,67 @@
+.modal-body-venue img{
+max-height: 400px;
+width: 100%
+}
+
+.venue-tastes span{
+  font-size: 12px;
+}
+/* .modal{
+  position: fixed;
+  display: block;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0 auto;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  overflow-x: hidden;
+  background-color: rgba(31,32,41,.75);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms 700ms ease;
+} */
+/*
+.modal-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  padding-bottom: 20px;
+  background-color: #fff;
+    -ms-flex-item-align: center;
+    align-self: center;
+    box-shadow: 0 12px 25px 0 rgba(199,175,189,.25);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 250ms 250ms ease, transform 300ms 250ms ease;
+}
+.modal-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+} */
+
+.form-label {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+}
 
 .bootstrap-select .bs-ok-default::after {
     width: 0.3em;
@@ -32,7 +96,7 @@ font-size: 20px;
 
 .items-head hr {
   width: 20%;
-  margin: 0px 30px 30px;
+  margin: 0px 30px 0px;
   border: 1px solid #0B5AA2;
 }
 

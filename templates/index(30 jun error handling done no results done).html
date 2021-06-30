@@ -77,11 +77,6 @@
       color: #101010;
     }
 
-    /* custom css for dropdown */
-
-    .choices {
-      margin-bottom: 0px;
-    }
     .choices__list--multiple .choices__item {
     background-color: #007bff;
     border: 1px solid #007bff;
@@ -185,7 +180,7 @@
     animation: icon 1.5s infinite forwards;
   }
   .modal-content {
-     width: 1000px;
+     width: 700px;
   }
 
   /* @keyframes icon {
@@ -238,14 +233,14 @@
       <input class="form-control" type="text" id="radius" placeholder="Radius" value="10000">
       <input class="form-control" type="text" id="sort_option" placeholder="Sort By" value="DISTANCE">
       <input class="form-control" type="text" id="max_results" placeholder="Number of results" value="10"> -->
-      <label class='form-label' for="latlng">Lat/Lng</label>
+      <label for="latlng">Lat/Lng</label>
       <input class="form-control" type="text" id="manual_latlng" placeholder="Key in lat long" value="1.2950,103.8583" required>
-      <label class='form-label' for="query">Query</label>
+      <label for="query">Query</label>
       <div class="dropdown">
       <input class="form-control" data-toggle="dropdown" type="text" id="query_text" placeholder="Search by name" value="" required>
       <div id="suggestcomplete_dropdown" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="query_text"></div>
       </div>
-      <label class='form-label' for="query">Chains<sup>NEW</sup></label>
+      <label for="query">Chains<sup>NEW</sup></label>
       <select class="form-control" type="text" id="chains" placeholder="Search by Chains" value="" required>
         <option label=" "></option>
         <option value="KFC">KFC</option>
@@ -253,7 +248,7 @@
         <option value="McDonald's">McDonald's</option>
         <option value="Pizza Hut">Pizza Hut</option>
         </select>
-      <label class='form-label' for="category">Category</label>
+      <label for="category">Category</label>
       <select class="selectpicker w-100" id="choices-multiple-remove-button" multiple>
                 <option value="10000">Arts and Entertainment</option>
                 <option value="11000">Business and Professional Services</option>
@@ -267,16 +262,16 @@
                 <option value="19000">Travel and Transportation</option>
             </select><!-- End -->
       <!-- <input class="form-control" type="text" id="category" placeholder="Category" value="10000"> -->
-      <label class='form-label' for="radius">Radius</label>
+      <label for="radius">Radius</label>
       <input class="form-control" type="text" id="radius" placeholder="Radius" value="10000">
-      <label class='form-label' for="sort">Sort By</label>
+      <label for="sort">Sort By</label>
       <select class="form-control" type="text" id="sort_option" placeholder="Sort By" value="Relevance">
         <option value="RELEVANCE">Relevance</option>
         <option value="DISTANCE">Distance</option>
         <option value="POPULARITY">Popularity</option>
         <option value="RATINGS">Ratings</option>
         </select>
-      <label class='form-label' for="max-results">Max Results</label>
+      <label for="max-results">Max Results</label>
       <input class="form-control" type="text" id="max_results" placeholder="Number of results" value="10">
       <ul class="nav">
       <button value="search" class="nav-link btn btn-primary" onclick="venues_search();">Places Search</button>
@@ -313,7 +308,7 @@
           </div>
         </div>
       </div>
-
+</div>
 <!-- Modal -->
 <!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -335,88 +330,9 @@
   </div> -->
   <!-- Modal -->
 
+</div>
 <!-- map -->
   <div id='map' class="map"></div>
-  <!-- Venue Details Modal -->
-  <!-- list with icons https://bootstrapious.com/p/bootstrap-list -->
-  <!-- Venue Modal -->
-  <div class="modal fade" id="venueModal" tabindex="-1" role="dialog" aria-labelledby="venueModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="venueModalLabel">Venue</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body-venue" id="modal-body-content">
-
-            <div id="venue-hero-photo"><img src="https://assets.codepen.io/1462889/sl3.jpg" alt=""></div>
-            <h4 class="venue-name mt-2 text-center" id="venue-details-name">Venue Name</h4>
-            <!-- <div class="venue-categories ml-4 mr-4 text-center">
-              <p>cat 1 . cat 2 . cat 3</p>
-            </div> -->
-            <div class="venue-hours ml-4 mr-4 text-center" id="venue-hours">
-              <p>Open Now | $$$$</p>
-            </div>
-            <div class="venue-tastes ml-4 mr-4 text-center" id="venue-tastes">
-              <span>Tastes:</span>
-              <span class="badge badge-pill badge-light">Light</span>
-              <span class="badge badge-pill badge-light">Light</span>
-              <span class="badge badge-pill badge-light">Light</span>
-              <span class="badge badge-pill badge-light">Light</span>
-              <span class="badge badge-pill badge-light">Light</span>
-            </div>
-            <div class="venue-description ml-4 mr-4" id="venue-description">
-              <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</p>
-            </div>
-            <div class="row">
-            <div class="col-sm-4 text-center">
-                  <div class="profile-overview">
-                      <p>Total Photos</p>
-                      <h4 id="venue-total-photos">1300</h4></div>
-              </div>
-              <div class="col-sm-4 text-center">
-                  <div class="profile-overview">
-                      <p>Total Ratings</p>
-                      <h4 id="venue-total-ratings">250</h4></div>
-              </div>
-              <div class="col-sm-4 text-center">
-                  <div class="profile-overview">
-                      <p>Total Tips</p>
-                      <h4 id="venue-total-tips">168</h4></div>
-              </div>
-            </div>
-            <div class="card-body p-2">
-                   <!-- List with icons -->
-                   <div class="row">
-                   <div class="col-sm-6">
-                   <ul class="list-unstyled list pl-5">
-
-                       <li class="mb-3 d-flex align-items-center"><i class="fa fa-inbox mr-3 text-primary"></i><div id="venue-email">Hello World</div></li>
-                       <li class="mb-3 d-flex align-items-center"><i class="fas fa-globe mr-3 text-primary"></i><div id="venue-website">http://www.foursquare.com</div></li>
-                       <li class="mb-3 d-flex align-items-center"><i class="fa fa-phone mr-3 text-primary"></i><div id="venue-tel">+14158291821</div></li>
-                       <li class="mb-3 d-flex align-items-center"><i class="fab fa-twitter mr-3 text-primary"></i><div id="venue-twitter">@helloworld</div></li>
-                       <li class="mb-3 d-flex align-items-center"><i class="fab fa-facebook-f mr-3 text-primary"></i><div id="venue-facebook">facebook.com/helloworld</div></li>
-                   </ul>
-                 </div>
-                 <div class="col-sm-6 text-center" id="venue-tips">
-                   <p>Tip 1</p>
-                   <p>Tip 2</p>
-                   <p>Tip 3</p>
-                   <p>Tip 4</p>
-                   <p>Tip 5</p>
-                 </div>
-               </div>
-               </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Photo Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -489,9 +405,6 @@
 
   function venues_search(){
     var latlng = document.getElementById("manual_latlng").value;
-    //trim white space
-    latlng = latlng.replace(/ +/g, "");
-    console.log(latlng);
     if (document.getElementById("chains").value) {
       var search_text = document.getElementById("chains").value;
     } else {
@@ -589,108 +502,6 @@
    console.error(error)
  });*/
 
-  }
-
-  function showVenueDetails(venueid){
-    console.log("showing venue details");
-    $('#venueModal').modal('show');
-//    var modal = document.getElementById("venueModal");
-  //  modal.style.display = "block";
-    // var venueDetailModal = document.getElementById("row-venue-name");
-    for (let i=0;i<fsq_results.length;i++) {
-      if (venueid == fsq_results[i]['fsq_id']){
-        document.getElementById("venue-details-name").innerHTML = fsq_results[i]['name'];
-//        venueDetailModal.innerHTML = "<span>"+fsq_results[i]['name']+"</span>";
-        if (typeof fsq_results[i]['rich']['description'] !== 'undefined') {
-          console.log(fsq_results[i]['rich']['description']);
-          var venueDescription = document.getElementById("venue-description");
-          venueDescription.innerHTML = "<p>" + fsq_results[i]['rich']['description'] + "</p>";
-        }
-        if (typeof fsq_results[i]['rich']['tastes'] !== 'undefined') {
-          var venueTastes = document.getElementById("venue-tastes");
-          venueTastes.innerHTML = "<span style='font-size:12;'>Tastes:</span>";
-           var total_taste = 0;
-            if (fsq_results[i]['rich']['tastes'].length >=5 ){
-              total_taste = 5;
-            } else {
-              total_taste = fsq_results[i]['rich']['tastes'].length;
-            }
-            for (let x =0;x < total_taste;x++) {
-              venueTastes.innerHTML += "<span class='badge badge-pill badge-light'>" + fsq_results[i]['rich']['tastes'][x] + "</span>";
-            }
-        }
-            document.getElementById("venue-hero-photo").innerHTML ="";
-          if (typeof fsq_results[i]['rich']['photos'] !== 'undefined') {
-            var hero_img_url = fsq_results[i]['rich']['photos'][0]['prefix'] +"original"+ fsq_results[i]['rich']['photos'][0]['suffix'];
-            document.getElementById("venue-hero-photo").innerHTML = "<img src=\'"+ hero_img_url + "\'alt=''>";
-
-          }
-              document.getElementById("venue-total-photos").innerHTML = "";
-              document.getElementById("venue-total-ratings").innerHTML = "";
-              document.getElementById("venue-total-tips").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['stats'] !== 'undefined') {
-            document.getElementById("venue-total-photos").innerHTML = fsq_results[i]['rich']['stats']['total_photos'];
-            document.getElementById("venue-total-ratings").innerHTML = fsq_results[i]['rich']['stats']['total_ratings'];
-            document.getElementById("venue-total-tips").innerHTML = fsq_results[i]['rich']['stats']['total_tips'];
-          }
-            document.getElementById("venue-tips").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['tips'] !== 'undefined') {
-            console.log(fsq_results[i]['rich']['tips']);
-            document.getElementById("venue-tips").innerHTML = "";
-            for(let x=0;x<fsq_results[i]['rich']['tips'].length;x++){
-            document.getElementById("venue-tips").innerHTML += "<i class='fas fa-quote-left'></i><p style='font-size:14px;'> " + fsq_results[i]['rich']['tips'][x]['text']+ "</p>";
-            }
-
-          }
-            document.getElementById("venue-hours").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['price'] !== 'undefined') {
-            document.getElementById("venue-hours").innerHTML = "";
-            for (let x=0;x<fsq_results[i]['rich']['price'];x++) {
-              document.getElementById("venue-hours").innerHTML += "<i class='fas fa-dollar-sign' style='color:gold'></i>";
-            }
-          }
-            document.getElementById("venue-email").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['email'] !== 'undefined') {
-            document.getElementById("venue-email").innerHTML = "";
-
-              document.getElementById("venue-email").innerHTML = "<a>" + fsq_results[i]['rich']['email'] + "</a>";
-
-          }
-
-            document.getElementById("venue-website").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['website'] !== 'undefined') {
-            console.log(fsq_results[i]['rich']['website']);
-            document.getElementById("venue-website").innerHTML = "";
-
-              document.getElementById("venue-website").innerHTML = "<div style='word-wrap: break-word;max-width:300px;'>" + fsq_results[i]['rich']['website'] + "</div";
-
-          }
-            document.getElementById("venue-tel").innerHTML = "";
-
-          if (typeof fsq_results[i]['rich']['tel'] !== 'undefined') {
-              console.log(fsq_results[i]['rich']['tel']);
-            document.getElementById("venue-tel").innerHTML = "";
-
-              document.getElementById("venue-tel").innerHTML = "<span>"+ fsq_results[i]['rich']['tel'] +"</span>";
-
-          }
-              document.getElementById("venue-twitter").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['social_media'] !== 'undefined') {
-            if (typeof fsq_results[i]['rich']['social_media']['twitter'] !== 'undefined') {
-            document.getElementById("venue-twitter").innerHTML = "";
-            document.getElementById("venue-twitter").innerHTML = "@"+fsq_results[i]['rich']['social_media']['twitter'];
-            }
-          }
-            document.getElementById("venue-facebook").innerHTML = "";
-          if (typeof fsq_results[i]['rich']['social_media'] !== 'undefined') {
-            if (typeof fsq_results[i]['rich']['social_media']['facebook_id'] !== 'undefined') {
-            document.getElementById("venue-facebook").innerHTML = "";
-            document.getElementById("venue-facebook").innerHTML = "@"+fsq_results[i]['rich']['social_media']['facebook_id'];
-              }
-            }
-
-      }
-    }
   }
 
   function getPhotos(venueid){
@@ -822,16 +633,6 @@
 
       var total_ratings_stat = "";
 
-      var categories_list = "";
-      if (typeof results[i]["categories"] !== 'undefined') {
-        for (let x=0;x<results[i]["categories"].length;x++){
-          categories_list += results[i]["categories"][x]['name'] + " . ";
-        }
-        categories_list = categories_list.substring(0, categories_list.length - 2);
-      } else {
-          categories_list = "";
-      }
-
       if (typeof results[i]["rich"]["stats"] !== 'undefined') {
           total_ratings_stat = results[i]['rich']['stats']['total_ratings'];
           console.log('total rating: ',total_ratings_stat);
@@ -841,7 +642,7 @@
       venuelist.innerHTML += "<li class='list-group-item'><div class='media align-items-lg-left flex-column flex-lg-row p-1'><div class='col-sm-8'>" +
       "<h6 class='mt-0 font-weight-bold mb-2'>"+results[i]['name'] +"</h6>" +
       "<p class='font-italic text-muted mb-0 small'>"+ results[i]['location']['address']+"</p>" +
-      "<p class='text-muted mb-0 small'>"+ categories_list + "</p>" +
+      "<p class='text-muted mb-0 small'>"+ results[i]['categories'][0]['name'] + "</p>" +
   //    "<div class='d-flex align-items-left justify-content-between mt-1'>" +
       "<p class='text-muted mb-0 small'>Distance: "+results[i]['distance'] + "</p>" +
       "<span class='text-muted mb-0 small'>"+ rating_score + " </span>" +
@@ -939,7 +740,6 @@
           console.log(e.features[0].properties.venueid);
           console.log(e.features[0].properties.venuename);
           console.log(e.features[0].properties.location);
-          showVenueDetails(e.features[0].properties.venueid);
       map.flyTo({
           center: e.features[0].geometry.coordinates
             });

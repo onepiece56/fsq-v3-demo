@@ -96,39 +96,32 @@ def venue_search():
     temp_res = []
     temp_res = response.json()
     print(response)
-    print(response.json())
-    print(temp_res)
-    print(temp_res["results"])
-    if temp_res["results"]:
-        fsq_results = temp_res["results"]
-        print(fsq_results)
-        results_geojson = []
-        no_results = False
-        map_center = temp_res["context"]["geo_bounds"]["circle"]["center"]
-        results_geojson = fsq_result_to_geojson(fsq_results)
-        for venue in fsq_results:
-            request_url = 'https://api.foursquare.com/v3/places/' + venue["fsq_id"] +\
-            '?fields=description,tel,fax,email,website,social_media,verified,hours,hours_popular,rating,stats,price,tastes,menu,date_closed,photos,tips'
-            print('request url is: ',request_url)
-            response = requests.get(request_url,
-            headers={'Accept': 'application/json',
-         'Access-Control-Allow-Origin':'*',
-            'Authorization': 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='})
-            details_res = []
-            details_res = response.json()
-            venue["rich"] = details_res
-            print(venue)
+    # if temp_res["results"]:
+    fsq_results = temp_res["results"]
+    print(fsq_results)
+    results_geojson = []
+    no_results = []
+    map_center = []
+    results_geojson = fsq_result_to_geojson(fsq_results)
+    for venue in fsq_results:
+        request_url = 'https://api.foursquare.com/v3/places/' + venue["fsq_id"] +\
+        '?fields=description,tel,fax,email,website,social_media,verified,hours,hours_popular,rating,stats,price,tastes,menu,date_closed,photos,tips'
+        print('request url is: ',request_url)
+        response = requests.get(request_url,
+        headers={'Accept': 'application/json',
+     'Access-Control-Allow-Origin':'*',
+        'Authorization': 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='})
+        details_res = []
+        details_res = response.json()
+        venue["rich"] = details_res
+        print(venue)
     #print(results_geojson)
-        mapbox_access_token = 'pk.eyJ1IjoiamluamluNTYiLCJhIjoiY2twNmswNnQ2MmlsMzJucXdpbDRudDI4bSJ9.wKq3aKfwVIXDnLWaQvwH2w'
+    mapbox_access_token = 'pk.eyJ1IjoiamluamluNTYiLCJhIjoiY2twNmswNnQ2MmlsMzJucXdpbDRudDI4bSJ9.wKq3aKfwVIXDnLWaQvwH2w'
     # return render_template("index.html",no_results=no_results,
     #                         results_geojson=results_geojson, map_center=map_center,
     #                         fsq_results=fsq_results,
     #                         mapbox_access_token=mapbox_access_token)
-        return({'fsq_results': fsq_results,'results_geojson':results_geojson,'no_results':no_results, 'new_map_center':map_center})
-    else:
-        print('no results')
-        no_results = True
-        return({'no_results':no_results})
+    return({'fsq_results': fsq_results,'results_geojson':results_geojson})
 #    return jsonify(fsq_results)
 
 def fsq_result_to_geojson(results):
