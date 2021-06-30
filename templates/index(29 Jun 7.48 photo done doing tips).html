@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<html lang='en'>
+<head>
+  <meta charset='utf-8' />
+  <title>Local search app</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous">
+  </script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous">
+  </script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
+  <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> -->
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
+  <link rel="shortcut icon" type="image/png" href="https://foursquare.com/favicon.ico">
+
+  <script src="https://kit.fontawesome.com/65fd33e079.js" crossorigin="anonymous"></script>
+  <style>
+
+
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      color: #404040;
+      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 400;
+      line-height: 20px;
+      padding: 20px 2px;
+    }
+
+    a {
+      color: #404040;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #101010;
+    }
+
+    /* The page is split between map and sidebar - the sidebar gets 1/3, map
+    gets 2/3 of the page. You can adjust this to your personal liking. */
+   .sidebar {
+      position: absolute;
+      width: 408px;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      border-right: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .map {
+      position: absolute;
+      left: 408px;
+      width:77%;
+      top: 0;
+      bottom: 0;
+    }
+
+    .heading {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      height: 60px;
+      line-height: 60px;
+      padding: 0 10px;
+    }
+
+      .marker {
+    background-image: url('mapbox-icon.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+
+    .mapboxgl-popup {
+    max-width: 200px;
+  }
+
+  .mapboxgl-popup-content {
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .items {
+  width: 300px;
+  background: #fffffe;
+  box-shadow: 0 3px 6px rgba(black,0.16), 0 3px 6px rgba(black,0.23);
+  border-top: 10px solid #0B5AA2;
+  }
+
+  .items-head p {
+    background-color: yellow;
+  padding: 5px 20px;
+  margin: 10px;
+  color: #0B5AA2;
+  font-weight: bold;
+  font-size: 200px;
+  }
+
+  .items-head hr {
+    width: 20%;
+    margin: 0px 30px;
+    border: 1px solid #0B5AA2;
+  }
+
+  .items-body {
+    padding: 10px;
+    margin: 10px;
+    display: grid;
+    grid-gap: 10px;
+  }
+
+  .items-body-content {
+    padding: 10px;
+    padding-right: 0px;
+    display: grid;
+    grid-template-columns: 10fr 1fr;
+    font-size: 13px;
+    grid-gap: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+
+  }
+
+  .items-body-content:hover {
+    border-radius: 15px;
+    border: 1px solid #0B5AA2;
+  }
+
+  .items-body-content i {
+    align-self: center;
+    font-size: 15px;
+    color: #0B5AA2;
+    font-weight: bold;
+    animation: icon 1.5s infinite forwards;
+  }
+  .modal-content {
+     width: 700px;
+  }
+
+  /* @keyframes icon {
+    0%,100%{
+      transform: translate(0px);
+    }
+    50% {
+      transform: translate(3px);
+    }
+  } */
+}
+  </style>
+  <!-- <script>
+   axios
+     .get("https://jsonplaceholder.typicode.com/users")
+     .then(response => {
+       console.log(response.data);
+     })
+     .catch(error => console.error(error));
+
+     const access_token = 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='
+
+     axios.get('https://api.foursquare.com/v3/places/search?query=restaurant&ll=1.3264408842087183,103.86374578554603&radius=100000&sort=DISTANCE&limit=50', {
+  headers: {
+    'Accept': 'application/json',
+     'Access-Control-Allow-Origin':'*',
+    'Authorization': `${access_token}`
+  }
+})
+.then((res) => {
+  console.log(res.data);
+})
+.catch((error) => {
+  console.error(error)
+});
+ </script> -->
+</head>
+<body>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
+ <div class='sidebar' style="overflow-y : auto; height:200">
+   <div class="items">
+     <div class='items-head'>
+       <p>Foursquare Search</p>
+       <hr>
+    </div>
+  </div>
+    <div class='search'>
+      <!-- <input class="form-control" type="text" id="manual_latlng" placeholder="Key in lat long" value="1.32,130" required>
+      <input class="form-control" type="text" id="query_text" placeholder="Search by name" value="Suntec" required>
+      <input class="form-control" type="text" id="radius" placeholder="Radius" value="10000">
+      <input class="form-control" type="text" id="sort_option" placeholder="Sort By" value="DISTANCE">
+      <input class="form-control" type="text" id="max_results" placeholder="Number of results" value="10"> -->
+      <label for="latlng">Lat/Lng</label>
+      <input class="form-control" type="text" id="manual_latlng" placeholder="Key in lat long" value="1.2950,103.8583" required>
+      <label for="query">Query</label>
+      <div class="dropdown">
+      <input class="form-control" data-toggle="dropdown" type="text" id="query_text" placeholder="Search by name" value="" required>
+      <div id="suggestcomplete_dropdown" class="dropdown-menu dropdown-menu-md-right" aria-labelledby="query_text"></div>
+      </div>
+      <label for="query">Chains<sup>NEW</sup></label>
+      <select class="form-control" type="text" id="chains" placeholder="Search by Chains" value="" required>
+        <option label=" "></option>
+        <option value="KFC">KFC</option>
+        <option value="Subway">Subway</option>
+        <option value="McDonald's">McDonald's</option>
+        <option value="Pizza Hut">Pizza Hut</option>
+        </select>
+      <label for="category">Category</label>
+      <input class="form-control" type="text" id="category" placeholder="Category" value="10000">
+      <label for="radius">Radius</label>
+      <input class="form-control" type="text" id="radius" placeholder="Radius" value="10000">
+      <label for="sort">Sort By</label>
+      <select class="form-control" type="text" id="sort_option" placeholder="Sort By" value="Relevance">
+        <option value="RELEVANCE">Relevance</option>
+        <option value="DISTANCE">Distance</option>
+        <option value="POPULARITY">Popularity</option>
+        <option value="RATINGS">Ratings</option>
+        </select>
+      <label for="max-results">Max Results</label>
+      <input class="form-control" type="text" id="max_results" placeholder="Number of results" value="10">
+      <ul class="nav">
+      <button value="search" class="nav-link btn btn-primary" onclick="venues_search();">Places Search</button>
+      </ul>
+    </div>
+  <div id='listings' class='items-body'></div>
+</div>
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span>hello world</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div> -->
+  <!-- Modal -->
+
+</div>
+<!-- map -->
+  <div id='map' class="map"></div>
+  <!-- Photo Modal -->
+  <div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Photos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-body-content">
+          <span>Hello World</span>
+          <div class="container-fluid">
+            <div class="row" id="row-gallery-content">
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tips Modal -->
+  <div class="modal fade" id="tipsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tips</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-body-content">
+          <span>Hello World</span>
+          <div class="container-fluid">
+            <div class="row text-center" id="row-tips">
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamluamluNTYiLCJhIjoiY2twNmswNnQ2MmlsMzJucXdpbDRudDI4bSJ9.wKq3aKfwVIXDnLWaQvwH2w';
+    var map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
+      center: [103.8013781,1.2740112], // Starting position [lng, lat]
+      zoom: 12, // Starting zoom level
+    });
+    var marker = new mapboxgl.Marker() // initialize a new marker
+  .setLngLat([-122.25948, 37.87221]) // Marker [lng, lat] coordinates
+  .addTo(map); // Add the marker to the map
+    var result_venueids = [];
+    var fsq_result, result_geojson, api_get_url;
+    var map_center = {
+      "type": "FeatureCollection",
+      "features": [{
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [103.8013781,1.2740112]
+        }
+      }]
+    };
+
+  function venues_search(){
+    var latlng = document.getElementById("manual_latlng").value;
+    if (document.getElementById("chains").value) {
+      var search_text = document.getElementById("chains").value;
+    } else {
+    var search_text = document.getElementById("query_text").value;
+    }
+    var radius = document.getElementById("radius").value;
+    var sort_by = document.getElementById("sort_option").value;
+    var max_results = document.getElementById("max_results").value;
+    var call_url;
+    call_url = "/search?query="+search_text+"&ll="+latlng+"&radius="+radius+"&sort="+sort_by+"&limit="+max_results;
+    call_search_api(call_url);
+  }
+
+  function call_search_api(call_url){
+  //  document.getElementById("listings").innerHTML = "call api";
+    $.ajax({
+      url:call_url,
+      type:'GET',
+      contentType:"application/json",
+      dataType:"json",
+      success: function(data){
+        //document.getElementById("listings").innerHTML = data;
+        //console.log(data);
+      fsq_results = data['fsq_results'];
+    //  console.log(fsq_results);
+      result_geojson = data['results_geojson'];
+      console.log(result_geojson);
+      draw_to_map(result_geojson);
+      updated_sidebar(fsq_results);
+      //   for (let i = 0; i < data.results.length; i++) {
+      //     var lat = data.results[i].geocodes.main.latitude;
+      // //    console.log(lat);
+      //     var lng = data.results[i].geocodes.main.longitude;
+      // //    console.log(lng);
+      //     draw_to_map(lat,lng);
+      //   }
+      //  map_center.features[0].geometry.coordinates = [coords.lng, coords.lat];
+      //  console.log(map_center.features[0].geometry.coordinates);
+      //  map.getSource('map_center').setData(map_center);
+      }
+    })
+      const access_token = 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='
+
+    /*  axios.get("call_url", {
+   headers: {
+     'Accept': 'application/json',
+     'Authorization': `${access_token}`
+   }
+ })
+ .then((res) => {
+   //console.log(res.data);
+   document.getElementById("listings").innerHTML = res.data;
+
+ })
+ .catch((error) => {
+   console.error(error)
+ });*/
+
+  }
+
+  function getPhotos(venueid){
+    console.log(venueid);
+  //  var call_url = "/getphotos/?venueid="+ venueid;
+    var call_url = "/getphotos?venueid="+ venueid;
+
+      // photo api
+    $.ajax({
+      url:call_url,
+      type:'GET',
+      contentType:"application/json",
+      global: false,
+      dataType:"json",
+      success: function(data){
+        console.log(data);
+        photo_results = data['photo_results'];
+        console.log();
+        //sample photo gallery: https://bootstrapious.com/p/bootstrap-photo-gallery
+        var photo_list = document.getElementById("row-gallery-content");
+        for (let i = 0; i < photo_results.length; i++) {
+          var photo_url = photo_results[i]["prefix"] + "400x400" + photo_results[i]["suffix"];
+          var badge = "";
+          if (typeof photo_results[i]["classifications"] !== 'undefined') {
+            console.log(photo_results[i]["classifications"]);
+            var photo_classification = photo_results[i]["classifications"][0];
+            console.log(photo_classification);
+          if (photo_classification == "food") {
+            badge = "<div class='badge badge-danger px-3 rounded-pill font-weight-normal'>Food</div>";
+          } else if (photo_classification == "menu") {
+            badge = "<div class='badge badge-primary px-3 rounded-pill font-weight-normal'>Menu</div>";
+          } else if (photo_classification == "indoor") {
+            badge = "<div class='badge badge-success px-3 rounded-pill font-weight-normal'>Indoor</div>";
+          } else if (photo_classification == "outdoor"){
+            badge = "<div class='badge badge-warning px-3 rounded-pill font-weight-normal'>Outdoor</div>";
+          }
+        } else {
+            badge = "<div class='badge badge-info px-3 rounded-pill font-weight-normal'>Others</div>";
+        }
+          console.log(photo_url);
+        //  photo_list.innerHTML += "<div class='col-md-3'><img src=\""+ photo_url + "\"alt='' class='zoom img-fluid'></div>";
+          photo_list.innerHTML += "<div class='col-lg-4 col-md-12 mb-4'><img src=\""+ photo_url + "\"alt='' class='zoom img-fluid'>" +
+          "<div class='d-flex align-items-center justify-content-between rounded-pill bg-light px-3 py-2 mt-4'>" + badge + "</div>";
+        }
+
+      }
+    });
+
+  }
+
+  function getTips(venueid){
+    console.log(venueid);
+    var call_url = "/gettips?venueid="+ venueid;
+    $.ajax({
+      url:call_url,
+      type:'GET',
+      contentType:"application/json",
+      global: false,
+      dataType:"json",
+      success: function(data){
+        console.log(data);
+        tips_results = data['tips_results'];
+      }
+    });
+
+  }
+
+  function updated_sidebar(results){
+    //console.log(results);
+    var completelist= document.getElementById("listings");
+    for (let i = 0; i < results.length; i++) {
+      console.log(results[i]["fsq_id"]);
+      completelist.innerHTML += "<div class='items-body-content'><span>" + results[i]["name"] + "</span><i class='fas fa-chevron-right'></i></div>" +
+"<button type='button' onclick='getPhotos(\""+ results[i]['fsq_id'] + "\")' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal'>See Photos</button>" +
+"<button type='button' onclick='getTips(\"" + results[i]['fsq_id'] + "\")' class='btn btn-primary' data-toggle='modal' data-target='#tipsModal'>See Tips</button>";
+};
+
+  }
+
+  function draw_to_map(geojson){
+    var el = document.createElement('div');
+    el.className = 'marker';
+    new mapboxgl.Marker()
+      .setLngLat([103.21,1.29])
+      .addTo(map);
+    map.addSource('fsq_result', {
+      type:'geojson',
+      data: geojson
+    });
+
+    // add data to layer for on click action
+    //     map.addLayer({
+    // 'id': 'fsq_result',
+    // 'type': 'circle',
+    // 'source': 'fsq_result',
+    // 'paint': {
+    // 'circle-color': '#4264fb',
+    // 'circle-radius': 8,
+    // 'circle-stroke-width': 2,
+    // 'circle-stroke-color': '#ffffff'
+    // }
+    // });
+
+    map.loadImage(
+      '{{url_for('static', filename='custom_marker.png')}}',
+      function (error, image) {
+        if (error) throw error;
+        map.addImage('custom-marker', image);
+      });
+    map.addLayer({
+                "id": "fsq_result_layer",
+                "interactive": true,
+                "type": "symbol",
+                "source": "fsq_result",
+                "layout": {
+                  'icon-image': 'custom-marker',
+                  'icon-allow-overlap': true,
+  // get the title name from the source's "title" property
+                  'text-field': ['get', 'title'],
+                  'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                  ],
+                  'text-offset': [0, 1.25],
+                  'text-anchor': 'top'
+                }
+            });
+      map.on('click', 'fsq_result_layer', function (e) {
+          console.log('marker click');
+          console.log(e.features[0].properties.venueid);
+          console.log(e.features[0].properties.venuename);
+          console.log(e.features[0].properties.location);
+      map.flyTo({
+          center: e.features[0].geometry.coordinates
+            });
+            });
+// adding marker to map directly
+//     geojson.features.forEach(function(marker) {
+//
+//   // create a HTML element for each feature
+//   var el = document.createElement('div');
+//   el.className = 'marker';
+//
+//   // make a marker for each feature and add to the map
+//   new mapboxgl.Marker(el)
+//     .setLngLat(marker.geometry.coordinates)
+//     .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+//   .setHTML('<h3>' + marker.properties.venuename + '</h3><p>' + marker.properties.location + '</p>'))
+//     .addTo(map);
+//     console.log('marker')
+// });
+  }
+
+  function open_venue_details_modal(fsq_name,fsq_id){
+    //console.log(fsq_name);
+     document.getElementById("query_text").value = fsq_name;
+
+  }
+
+  $(document).ready(function(){
+    document.getElementById("query_text").addEventListener('input',(event)=>{
+      var query = document.getElementById("query_text").value;
+      if(query.length >= 3){
+        if(document.getElementById("manual_latlng").value){
+        var curr_location = document.getElementById("manual_latlng").value;
+      } else {
+
+        //hard code a location instead of getting user current location
+        curr_location = '1.2950,103.8583';
+      }
+      //  var locale = document.getElementById("locale_select").value;
+        var call_url = "/autocomplete?query="+ query + "&ll=" + curr_location;
+
+      //autocomplete api
+    $.ajax({
+      url:call_url,
+      type:'GET',
+      contentType:"application/json",
+      global: false,
+      dataType:"json",
+      success: function(data){
+        console.log(data['suggest_results']);
+        var sc_dropdown = document.getElementById("suggestcomplete_dropdown");
+        sc_dropdown.innerHTML = "";
+        var suggest_count = 0;
+        var suggestion_filtered_list = [];
+        if(data['suggest_results'].length > 0){
+          for(var index = 0; index < data['suggest_results'].length; index ++){
+            if(data['suggest_results'][index]['type'] == "place"){
+              suggest_count++;
+              suggestion_filtered_list.push(data['suggest_results'][index]);
+
+            var minivenue = data['suggest_results'][index];
+            /*
+            if ("categories" in minivenue || minivenue.categories.length > 0){
+              primary_cat_icon_url = minivenue.categories[0].icon.prefix + "44" + minivenue.categories[0].icon.suffix
+              for(var mv_cat_index = 0; mv_cat_index < minivenue.categories.length; mv_cat_index++){
+                if ("primary" in minivenue.categories[mv_cat_index]){
+                  primary_cat_icon_url = minivenue.categories[mv_cat_index].icon.prefix + "44" + minivenue.categories[mv_cat_index].icon.suffix;
+                }
+              }
+            }
+            */
+            fsq_name = data['suggest_results'][index]['place']['name'];
+
+            fsq_id = data['suggest_results'][index]['place']['fsq_id'];
+            sc_dropdown.innerHTML = sc_dropdown.innerHTML + '<a class="dropdown-item" onclick="open_venue_details_modal(\'' +  fsq_name + '\',\'' + fsq_id + '\')">' + fsq_name + '</a>';
+                }
+              }
+            console.log(suggest_count);
+            }
+          }});
+        };
+      });
+    });
+
+  </script>
+</body>
+</html>

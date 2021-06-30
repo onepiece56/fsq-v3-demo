@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<html lang='en'>
+<head>
+  <meta charset='utf-8' />
+  <title>Local search app</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous">
+  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous">
+  </script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    <style>
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      color: #404040;
+      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 400;
+      line-height: 20px;
+      padding: 20px 2px;
+    }
+
+    a {
+      color: #404040;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #101010;
+    }
+
+    /* The page is split between map and sidebar - the sidebar gets 1/3, map
+    gets 2/3 of the page. You can adjust this to your personal liking. */
+   .sidebar {
+      position: absolute;
+      width: 408px;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      border-right: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .map {
+      position: absolute;
+      left: 408px;
+      width:100%;
+      top: 0;
+      bottom: 0;
+    }
+
+    .heading {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      height: 60px;
+      line-height: 60px;
+      padding: 0 10px;
+    }
+  </style>
+  <!-- <script>
+   axios
+     .get("https://jsonplaceholder.typicode.com/users")
+     .then(response => {
+       console.log(response.data);
+     })
+     .catch(error => console.error(error));
+
+     const access_token = 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='
+
+     axios.get('https://api.foursquare.com/v3/places/search?query=restaurant&ll=1.3264408842087183,103.86374578554603&radius=100000&sort=DISTANCE&limit=50', {
+  headers: {
+    'Accept': 'application/json',
+     'Access-Control-Allow-Origin':'*',
+    'Authorization': `${access_token}`
+  }
+})
+.then((res) => {
+  console.log(res.data);
+})
+.catch((error) => {
+  console.error(error)
+});
+ </script> -->
+</head>
+<body>
+ <div class='sidebar'>
+  <div class='heading'>
+    <h1>Results</h1>
+  </div>
+  <input class="form-control" type="text" id="manual_latlng" placeholder="Key in lat long" value="1.32,130" required>
+  <input class="form-control" type="text" id="query_text" placeholder="Search by name" value="Suntec" required>
+  <input class="form-control" type="text" id="radius" placeholder="Radius" value="10000">
+  <input class="form-control" type="text" id="sort_option" placeholder="Sort By" value="DISTANCE">
+  <input class="form-control" type="text" id="max_results" placeholder="Number of results" value="10">
+  <ul class="nav">
+      <button value="search" class="nav-link btn btn-primary" onclick="venues_search();">Places Search</button>
+  </ul>
+  <div id='listings' class='listings'></div>
+</div>
+  <div id='map' class="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamluamluNTYiLCJhIjoiY2twNmswNnQ2MmlsMzJucXdpbDRudDI4bSJ9.wKq3aKfwVIXDnLWaQvwH2w';
+    var map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
+      center: [103.8013781,1.2740112], // Starting position [lng, lat]
+      zoom: 12, // Starting zoom level
+    });
+    var marker = new mapboxgl.Marker() // initialize a new marker
+  .setLngLat([-122.25948, 37.87221]) // Marker [lng, lat] coordinates
+  .addTo(map); // Add the marker to the map
+    var result_venueids = [];
+    var fsq_result, result_geojson, api_get_url, no_results;
+    var map_center = {
+      "type": "FeatureCollection",
+      "features": [{
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [103.8013781,1.2740112]
+        }
+      }]
+    };
+
+  function venues_search(){
+    var latlng = document.getElementById("manual_latlng").value;
+    var search_text = document.getElementById("query_text").value;
+    var radius = document.getElementById("radius").value;
+    var sort_by = document.getElementById("sort_option").value;
+    var max_results = document.getElementById("max_results").value;
+    var call_url;
+    call_url = "/search?query="+search_text+"&ll="+latlng+"&radius="+radius+"&sort="+sort_by+"&limit="+max_results;
+    call_search_api(call_url);
+  }
+
+  function call_search_api(call_url){
+    document.getElementById("listings").innerHTML = "call api";
+    $.ajax({
+      url:"/search",
+      type:'GET',
+      contentType:"application/json",
+      dataType:"json",
+      success: function(data){
+        document.getElementById("listings").innerHTML = data;
+        console.log(data);
+      fsq_results = data.fsq_results;
+      console.log(fsq_results);
+      results_geojson = data['results_geojson'];
+      console.log(results_geojson);
+        for (let i = 0; i < data.results.length; i++) {
+          var lat = data.results[i].geocodes.main.latitude;
+      //    console.log(lat);
+          var lng = data.results[i].geocodes.main.longitude;
+      //    console.log(lng);
+          draw_to_map(lat,lng);
+        }
+        map_center.features[0].geometry.coordinates = [coords.lng, coords.lat];
+        console.log(map_center.features[0].geometry.coordinates);
+        map.getSource('map_center').setData(map_center);
+      }
+    })
+
+    /*  const access_token = 'fsq321oPL4Ew/sI8I+k1SVrdcUjFa5QuCQSiZ6lpU1rozQk='
+
+      axios.get("call_url", {
+   headers: {
+     'Accept': 'application/json',
+     'Authorization': `${access_token}`
+   }
+ })
+ .then((res) => {
+   //console.log(res.data);
+   document.getElementById("listings").innerHTML = res.data;
+
+ })
+ .catch((error) => {
+   console.error(error)
+ });*/
+
+  }
+
+  function draw_to_map(lat,lng){
+
+    var marker1 = new mapboxgl.Marker()
+    .setLngLat([lng, lat])
+    .addTo(map);
+  }
+  map.on('click', 'circle', function (e) {
+    map.flyTo({
+      center: e.features[0].geometry.coordinates
+    });
+  });
+
+  </script>
+</body>
+</html>
